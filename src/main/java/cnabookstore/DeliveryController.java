@@ -27,11 +27,12 @@ import java.util.List;
     throw new RuntimeException("CircuitBreaker!!!");
    }
 
+   System.out.println("$$$ SUCCESS!!!");
    return isYn;
   }
 
   private String fallback(String isYn) {
-   System.out.println("### fallback!!!");
+   System.out.println("@@@ fallback!!!");
    return "CircuitBreaker!!!";
   }
  }
