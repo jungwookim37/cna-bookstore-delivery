@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: delivery
-  namespace: istio-cb-ns
   labels:
     app: delivery
 spec:
@@ -14,8 +13,6 @@ spec:
     metadata:
       labels:
         app: delivery
-      annotations:
-        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: delivery
