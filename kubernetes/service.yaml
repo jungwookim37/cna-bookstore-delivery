@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: delivery
+  namespace: istio-cb-ns
   labels:
     app: delivery
 spec:
