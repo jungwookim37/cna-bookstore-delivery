@@ -8,9 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
- @RestController
+@RestController
  public class DeliveryController {
+
+  @Autowired
+  DeliveryRepository deliveryRepository;
 
   @GetMapping("/circuitBreaker")
   @HystrixCommand(fallbackMethod = "fallback", commandProperties = {
@@ -32,8 +36,33 @@ import java.util.List;
    return " SUCCESS!!!";
   }
 
+  @GetMapping("/selectDeliveryInfo")
+  @HystrixCommand(fallbackMethod = "fallbackDelivery", commandProperties = {
+          @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"),
+          @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "10000")
+  })
+  public String selectDeliveryInfo(@RequestParam long deliveryId) throws InterruptedException {
+
+   if (deliveryId <= 0) {
+    System.out.println("@@@ CircuitBreaker!!!");
+    Thread.sleep(10000);
+    //throw new RuntimeException("CircuitBreaker!!!");
+   } else {
+    Optional<Delivery> delivery = deliveryRepository.findById(deliveryId);
+    return delivery.get().getDeliveryStatus();
+   }
+
+   System.out.println("$$$ SUCCESS!!!");
+   return " SUCCESS!!!";
+  }
+
   private String fallback(String isYn) {
    System.out.println("### fallback!!!");
    return "CircuitBreaker!!!";
   }
+
+ private String fallbackDelivery(long deliveryId) {
+  System.out.println("### fallback!!!");
+  return "CircuitBreaker!!!";
+ }
  }
