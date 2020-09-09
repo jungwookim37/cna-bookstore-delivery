@@ -14,25 +14,26 @@ import java.util.List;
 
   @GetMapping("/circuitBreaker")
   @HystrixCommand(fallbackMethod = "fallback", commandProperties = {
-          @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500"),
-          @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "10000"),
-          @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "10"),
-          @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
+          @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"),
+//          @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "10000"),
+//          @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "10"),
+//          @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
           @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "10000")
   })
-  public String circuitBreakerTest(@RequestParam String isYn) {
+  public String circuitBreakerTest(@RequestParam String isYn) throws InterruptedException {
 
    if (isYn.equals("Y")) {
     System.out.println("@@@ CircuitBreaker!!!");
-    throw new RuntimeException("CircuitBreaker!!!");
+    Thread.sleep(10000);
+    //throw new RuntimeException("CircuitBreaker!!!");
    }
 
    System.out.println("$$$ SUCCESS!!!");
-   return isYn;
+   return " SUCCESS!!!";
   }
 
   private String fallback(String isYn) {
-   System.out.println("@@@ fallback!!!");
+   System.out.println("### fallback!!!");
    return "CircuitBreaker!!!";
   }
  }
